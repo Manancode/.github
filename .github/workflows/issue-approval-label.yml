@@ -1,0 +1,35 @@
+name: Handle Approval Label
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  handle-approved:
+    if: startsWith(github.repository, 'asyncapi/') && github.event.label.name == 'approved'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            const issueNumber = context.payload.issue.number;
+            const labels = context.payload.issue.labels.map(l => l.name);
+
+            if (labels.includes('needs-approval')) {
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                name: 'needs-approval'
+              });
+              console.log(`Removed needs-approval label from issue #${issueNumber}`);
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              body: `This issue has been approved by a maintainer! 🎉\n\nContributors are welcome to work on this issue. If you'd like to work on it, please comment below to get assigned.`
+            });
+
