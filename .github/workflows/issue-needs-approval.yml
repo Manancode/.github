@@ -21,22 +21,22 @@ jobs:
               return;
             }
 
-            let permissionLevel = 'none';
-            try {
-              const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                username: issueAuthor
-              });
-              permissionLevel = data.permission;
-            } catch (error) {
-              console.log(`Could not get permission level for ${issueAuthor}: ${error.message}`);
-            }
+            // let permissionLevel = 'none';
+            // try {
+            //   const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+            //     owner: context.repo.owner,
+            //     repo: context.repo.repo,
+            //     username: issueAuthor
+            //   });
+            //   permissionLevel = data.permission;
+            // } catch (error) {
+            //   console.log(`Could not get permission level for ${issueAuthor}: ${error.message}`);
+            // }
 
-            if (['admin', 'write'].includes(permissionLevel)) {
-              console.log(`Skipping: ${issueAuthor} is a maintainer (${permissionLevel})`);
-              return;
-            }
+            // if (['admin', 'write'].includes(permissionLevel)) {
+            //   console.log(`Skipping: ${issueAuthor} is a maintainer (${permissionLevel})`);
+            //   return;
+            // }
 
             const issueNumber = context.payload.issue.number;
             const action = context.payload.action;

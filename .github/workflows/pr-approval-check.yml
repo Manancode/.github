@@ -6,7 +6,7 @@ on:
 
 jobs:
   check-linked-issue:
-    if: startsWith(github.repository, 'asyncapi/')
+    # if: startsWith(github.repository, 'asyncapi/') 
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
@@ -21,22 +21,22 @@ jobs:
               return;
             }
 
-            let permissionLevel = 'none';
-            try {
-              const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                username: prAuthor
-              });
-              permissionLevel = data.permission;
-            } catch (error) {
-              console.log(`Could not get permission level for ${prAuthor}: ${error.message}`);
-            }
+            // let permissionLevel = 'none';
+            // try {
+            //   const { data } = await github.rest.repos.getCollaboratorPermissionLevel({
+            //     owner: context.repo.owner,
+            //     repo: context.repo.repo,
+            //     username: prAuthor
+            //   });
+            //   permissionLevel = data.permission;
+            // } catch (error) {
+            //   console.log(`Could not get permission level for ${prAuthor}: ${error.message}`);
+            // }
 
-            if (['admin', 'write'].includes(permissionLevel)) {
-              console.log(`Skipping: ${prAuthor} is a maintainer (${permissionLevel})`);
-              return;
-            }
+            // if (['admin', 'write'].includes(permissionLevel)) {
+            //   console.log(`Skipping: ${prAuthor} is a maintainer (${permissionLevel})`);
+            //   return;
+            // }
 
             const prNumber = context.payload.pull_request.number;
             const prBody = context.payload.pull_request.body || '';
