@@ -49,8 +49,8 @@ jobs:
             });
 
             const message = action === 'reopened' 
-              ? `This issue has been reopened and requires maintainer approval again.\n\nA maintainer will review this issue and approve it if it aligns with project goals. If no approval is given within **21 days**, this issue will be automatically closed.\n\nThank you for your patience! ❤️`
-              : `Thank you for opening this issue! 🎉\n\nThis issue requires approval from a maintainer before work can begin. A maintainer will review it shortly.\n\n**Timeline:**\n- If not approved within **7 days**, a reminder will be posted\n- If not approved within **21 days**, this issue will be automatically closed\n\nPlease make sure your issue follows our [Contributing Guidelines](https://github.com/asyncapi/.github/blob/master/CONTRIBUTING.md).\n\nThank you for your patience! ❤️`;
+              ? `This issue has been reopened and requires maintainer approval again.\n\nMaintainers can approve this issue by commenting \`/approve\` or reject it by commenting \`/reject\`.\n\nIf no approval is given within **21 days**, this issue will be automatically closed.\n\nThank you for your patience! ❤️`
+              : `Thank you for opening this issue! 🎉\n\nThis issue requires approval from a maintainer before work can begin. Maintainers can approve this issue by commenting \`/approve\` or reject it by commenting \`/reject\`.\n\n**Timeline:**\n- If not approved within **7 days**, a reminder will be posted\n- If not approved within **21 days**, this issue will be automatically closed\n\nPlease make sure your issue follows our [Contributing Guidelines](https://github.com/asyncapi/.github/blob/master/CONTRIBUTING.md).\n\nThank you for your patience! ❤️`;
 
             await github.rest.issues.createComment({
               owner: context.repo.owner,

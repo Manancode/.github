@@ -7,7 +7,7 @@ on:
 
 jobs:
   check-unapproved-issues:
-    if: startsWith(github.repository, 'asyncapi/')
+    # if: startsWith(github.repository, 'asyncapi/')  # Uncomment for production
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
@@ -66,7 +66,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `**Reminder:** This issue is still awaiting approval from a maintainer.\n\nIf a maintainer doesn't approve this issue within the next **14 days**, it will be automatically closed.\n\nMaintainers: Please add the \`approved\` label if this issue should be worked on.`
+                  body: `**Reminder:** This issue is still awaiting approval from a maintainer.\n\nIf a maintainer doesn't approve this issue within the next **14 days**, it will be automatically closed.\n\nMaintainers: Please comment \`/approve\` to approve this issue or \`/reject\` to reject it.`
                 });
 
                 console.log(`Posted reminder on issue #${issueNumber}`);
