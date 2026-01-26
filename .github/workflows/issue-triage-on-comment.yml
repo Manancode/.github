@@ -66,12 +66,16 @@ jobs:
               return;
             }
 
-            await github.rest.issues.removeLabel({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issueNumber,
-              name: 'status/to-be-triaged'
-            }).catch(err => console.log('Label already removed:', err.message));
+            for (const name of ['status/to-be-triaged', 'status/not-needed']) {
+              if (labels.includes(name)) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  name
+                }).catch(() => {});
+              }
+            }
 
             await github.rest.issues.addLabels({
               owner: context.repo.owner,

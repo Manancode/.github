@@ -1,32 +1,35 @@
-name: Issue Closure Label
+name: PR Closed Without Merge
 
 on:
-  issues:
+  pull_request:
     types: [closed]
 
 jobs:
-  add-closure-label:
-    if: startsWith(github.repository, 'asyncapi/') || github.repository == 'Manancode/.github'
+  mark-not-needed:
+    if: >
+      (startsWith(github.repository, 'asyncapi/') || github.repository == 'Manancode/.github') &&
+      github.event.pull_request.merged == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
-            const issueNumber = context.payload.issue.number;
-            const labels = context.payload.issue.labels.map(l => l.name);
+            const prNumber = context.payload.pull_request.number;
+            const labels = context.payload.pull_request.labels.map(l => l.name);
 
             if (labels.includes('status/done')) {
-              console.log(`Issue #${issueNumber} already marked as status/done - skipping`);
+              console.log(`PR #${prNumber} already marked as status/done - skipping`);
               return;
             }
 
-            for (const name of ['status/to-be-triaged', 'status/triaged', 'status/in-progress']) {
+            const toRemove = ['status/in-review', 'no-linked-issue'];
+            for (const name of toRemove) {
               if (labels.includes(name)) {
                 await github.rest.issues.removeLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  issue_number: issueNumber,
+                  issue_number: prNumber,
                   name
                 }).catch(() => {});
               }
@@ -35,8 +38,8 @@ jobs:
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: issueNumber,
+              issue_number: prNumber,
               labels: ['status/not-needed']
             });
 
-            console.log(`Added status/not-needed label to closed issue #${issueNumber}`);
+            console.log(`Added status/not-needed to closed (unmerged) PR #${prNumber}`);

@@ -42,16 +42,43 @@ jobs:
             const issueNumber = context.payload.issue.number;
             const action = context.payload.action;
 
+            const { data: issue } = await github.rest.issues.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber
+            });
+            const labels = issue.labels.map(l => l.name);
+
+            const removeIfPresent = async (name) => {
+              if (!labels.includes(name)) return;
+              await github.rest.issues.removeLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                name
+              }).catch(() => {});
+            };
+
             if (isCodeowner) {
+              await removeIfPresent('status/not-needed');
+              await removeIfPresent('status/to-be-triaged');
+              await removeIfPresent('status/done');
+              await removeIfPresent('status/in-progress');
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: issueNumber,
                 labels: ['status/triaged']
               });
-              
               console.log(`Issue #${issueNumber} created by CODEOWNER - marked as triaged`);
             } else {
+              if (labels.includes('status/triaged')) {
+                console.log(`Issue #${issueNumber} already has status/triaged - skipping`);
+                return;
+              }
+              await removeIfPresent('status/not-needed');
+              await removeIfPresent('status/done');
+              await removeIfPresent('status/in-progress');
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
