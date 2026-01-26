@@ -50,7 +50,6 @@ jobs:
             const labels = issue.labels.map(l => l.name);
 
             const removeIfPresent = async (name) => {
-              if (!labels.includes(name)) return;
               await github.rest.issues.removeLabel({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
