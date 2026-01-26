@@ -16,7 +16,19 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.payload.pull_request.number;
-            const labels = context.payload.pull_request.labels.map(l => l.name);
+
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+
+            if (pr.state !== 'closed') {
+              console.log(`PR #${prNumber} is now open (was reopened) - skipping closure label`);
+              return;
+            }
+
+            const labels = pr.labels.map(l => l.name);
 
             if (labels.includes('status/done')) {
               console.log(`PR #${prNumber} already marked as status/done - skipping`);
