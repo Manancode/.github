@@ -188,7 +188,7 @@ jobs:
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     issue_number: prNumber,
-                    body: `Thanks for the PR! 🎉\n\nThis PR is linked to issue #${issueNumber} that hasn't been approved/triaged by maintainers yet.\n\nPlease pause work and wait for maintainer approval on the issue first. Please go ahead and close this PR.\n\nIf it stays open, it may be marked for closure after a grace period.\n\nThank you for your understanding! ❤️`
+                    body: `Thanks for the PR! 🎉\n\nThis PR is linked to issue #${issueNumber} that hasn't been approved/triaged by maintainers yet.\n\nPlease pause work and wait for maintainer approval on the issue first.\n\nIf it stays open, it may be marked for closure after a grace period.\n\nThank you for your understanding! ❤️`
                   });
 
                   console.log(`PR #${prNumber} links to untriaged issue #${issueNumber} - added comment`);
@@ -198,6 +198,16 @@ jobs:
               }
 
               if (isTriaged) {
+                for (const name of ['status/not-needed', 'status/to-be-triaged']) {
+                  if (labels.includes(name)) {
+                    await github.rest.issues.removeLabel({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: issueNumber,
+                      name
+                    }).catch(() => {});
+                  }
+                }
                 await github.rest.issues.addLabels({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -205,6 +215,14 @@ jobs:
                   labels: ['status/in-progress']
                 }).catch(err => console.log('Could not add status/in-progress to issue:', err.message));
 
+                if (prData.labels.some(l => l.name === 'no-linked-issue')) {
+                  await github.rest.issues.removeLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: prNumber,
+                    name: 'no-linked-issue'
+                  }).catch(() => {});
+                }
                 await github.rest.issues.addLabels({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
