@@ -44,17 +44,63 @@ jobs:
             }
 
             const prNumber = context.payload.pull_request.number;
+            // Linked issues: GraphQL closingIssuesReferences (canonical) first, then regex fallback.
+            // Official keywords: close, closes, closed, fix, fixes, fixed, resolve, resolves, resolved.
+            // Same-repo only. Supports KEYWORD #N and KEYWORD owner/repo#N.
             const { data: prData } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: prNumber
             });
             const prBody = prData.body || '';
-            const issuePattern = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s*#(\d+)/gi;
-            const matches = [...prBody.matchAll(issuePattern)];
-            const linkedIssues = matches.map(m => parseInt(m[1]));
 
-            console.log(`PR #${prNumber} body length: ${prBody.length}, linked issues: [${linkedIssues.join(', ')}]`);
+            let linkedIssues = [];
+            let source = 'none';
+
+            try {
+              const gql = `
+                query($owner: String!, $repo: String!, $pr: Int!) {
+                  repository(owner: $owner, name: $repo) {
+                    pullRequest(number: $pr) {
+                      closingIssuesReferences(first: 100) {
+                        nodes {
+                          number
+                          repository { name owner { login } }
+                        }
+                      }
+                    }
+                  }
+                }
+              `;
+              const { repository } = await github.graphql(gql, {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pr: prNumber
+              });
+              const nodes = repository?.pullRequest?.closingIssuesReferences?.nodes ?? [];
+              const sameRepo = nodes.filter(
+                n => n?.repository && n.repository.owner?.login === context.repo.owner && n.repository.name === context.repo.repo
+              );
+              linkedIssues = [...new Set(sameRepo.map(n => n.number).filter(Boolean))];
+              if (linkedIssues.length > 0) source = 'graphql';
+            } catch (e) {
+              console.log(`GraphQL closingIssuesReferences failed: ${e.message}`);
+            }
+
+            if (linkedIssues.length === 0) {
+              const kw = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s*#(\d+)/gi;
+              const ms = [...prBody.matchAll(kw)];
+              const same = ms.map(m => parseInt(m[1], 10)).filter(n => !isNaN(n));
+              const cross = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+([\w.-]+)\/([\w.-]+)#(\d+)/gi;
+              const m2 = [...prBody.matchAll(cross)];
+              for (const m of m2) {
+                if (m[1] === context.repo.owner && m[2] === context.repo.repo) same.push(parseInt(m[3], 10));
+              }
+              linkedIssues = [...new Set(same)];
+              if (linkedIssues.length > 0) source = 'regex';
+            }
+
+            console.log(`PR #${prNumber} linked issues: [${linkedIssues.join(', ')}] (${source})`);
 
             if (linkedIssues.length > 0) {
               if (prData.labels.some(l => l.name === 'no-linked-issue')) {
