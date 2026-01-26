@@ -15,11 +15,12 @@ jobs:
           github-token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             const now = new Date();
-            const twoWeeksAgo = new Date(now - 14 * 24 * 60 * 60 * 1000);
-            const threeWeeksAgo = new Date(now - 21 * 24 * 60 * 60 * 1000);
-            const fiveWeeksAgo = new Date(now - 35 * 24 * 60 * 60 * 1000);
-            const sixWeeksAgo = new Date(now - 42 * 24 * 60 * 60 * 1000);
-            const sixtyDaysAgo = new Date(now - 60 * 24 * 60 * 60 * 1000);
+            // TEST MODE: minutes. REVERT to days before final PR (see REVERT_FOR_FINAL_PR.md)
+            const twoWeeksAgo = new Date(now - 2 * 60 * 1000);
+            const threeWeeksAgo = new Date(now - 3 * 60 * 1000);
+            const fiveWeeksAgo = new Date(now - 5 * 60 * 1000);
+            const sixWeeksAgo = new Date(now - 6 * 60 * 1000);
+            const sixtyDaysAgo = new Date(now - 6 * 60 * 1000);
 
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -51,11 +52,12 @@ jobs:
                 e => e.event === 'labeled' && e.label.name === 'status/to-be-triaged'
               );
 
+              let labelAddedAt;
               if (!triageLabelAdded) {
                 console.log(`Issue #${issueNumber} has no label event history - using issue creation date`);
-                const labelAddedAt = new Date(issue.created_at);
+                labelAddedAt = new Date(issue.created_at);
               } else {
-                var labelAddedAt = new Date(triageLabelAdded.created_at);
+                labelAddedAt = new Date(triageLabelAdded.created_at);
               }
 
               console.log(`Issue #${issueNumber} - label added: ${labelAddedAt.toISOString()}`);
@@ -68,13 +70,11 @@ jobs:
               });
 
               const hasFirstReminder = comments.some(c => 
-                c.body.includes('Reminder: This issue is awaiting triage') && 
-                c.body.includes('2-3 weeks')
+                c.body.includes('Reminder: This issue is awaiting triage')
               );
 
               const hasSecondReminder = comments.some(c => 
-                c.body.includes('Second reminder: This issue is still awaiting triage') &&
-                c.body.includes('5-6 weeks')
+                c.body.includes('Second reminder: This issue is still awaiting triage')
               );
 
               const hasClosureProposal = labels.includes('bot/to-be-closed');
@@ -91,7 +91,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `This issue has not been triaged by a maintainer within 60 days and is being proposed for closure.\n\n@asyncapi/maintainers - Please review this issue and decide whether to:\n- Triage it by removing \`status/to-be-triaged\` and adding \`status/triaged\`\n- Close it if it's not aligned with project goals\n- Add \`keep-open\` label if it needs more time\n\nThank you! ❤️`
+                  body: `**TEST MODE:** This issue has not been triaged within 60 days (TEST: 6 min) and is being proposed for closure.\n\n@asyncapi/maintainers - Please review and decide: triage, close, or add \`keep-open\`.\n\nThank you! ❤️`
                 });
 
                 console.log(`Issue #${issueNumber} proposed for closure (60+ days untriaged)`);
@@ -101,7 +101,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `**Second reminder:** This issue is still awaiting triage from a maintainer.\n\nIt has been **5-6 weeks** since this issue was opened. If no triage occurs within the next few weeks, it may be proposed for closure.\n\nThank you for your patience! ❤️`
+                  body: `**Second reminder (TEST):** This issue is still awaiting triage from a maintainer.\n\nIt has been **5-6 weeks** (TEST: 5-6 min) since triage. If no triage occurs, it may be proposed for closure.\n\nThank you for your patience! ❤️`
                 });
 
                 console.log(`Posted second reminder on issue #${issueNumber}`);
@@ -111,7 +111,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issueNumber,
-                  body: `**Reminder:** This issue is awaiting triage from a maintainer.\n\nIt has been **2-3 weeks** since this issue was opened. A maintainer will review and triage this issue soon.\n\nThank you for your patience! ❤️`
+                  body: `**Reminder (TEST):** This issue is awaiting triage from a maintainer.\n\nIt has been **2-3 weeks** (TEST: 2-3 min) since triage. A maintainer will review and triage this issue soon.\n\nThank you for your patience! ❤️`
                 });
 
                 console.log(`Posted first reminder on issue #${issueNumber}`);
