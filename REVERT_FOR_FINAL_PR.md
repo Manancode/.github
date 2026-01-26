@@ -24,8 +24,8 @@
 - Restore reminder messages to use "1-2 weeks", "2-3 weeks", "3-4 weeks".
 
 ## 4. CODEOWNERS testing
-- Test auto-triage on CODEOWNER comment **last** (add self to CODEOWNERS temporarily if needed).
-- Remove self from CODEOWNERS after testing.
+- **Added `@Manancode` to CODEOWNERS for testing** - REMOVE before final PR!
+- Remove `@Manancode` from CODEOWNERS file after testing is complete.
 
 ## 5. Test branch
 - After PR testing, delete branch `test-pr-triage`.
