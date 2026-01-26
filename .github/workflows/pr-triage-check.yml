@@ -50,6 +50,23 @@ jobs:
             const matches = [...prBody.matchAll(issuePattern)];
             const linkedIssues = matches.map(m => parseInt(m[1]));
 
+            if (linkedIssues.length > 0) {
+              const { data: prWithLabels } = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber
+              });
+              if (prWithLabels.labels.some(l => l.name === 'no-linked-issue')) {
+                await github.rest.issues.removeLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  name: 'no-linked-issue'
+                });
+                console.log(`PR #${prNumber} now has linked issue(s) - removed no-linked-issue label`);
+              }
+            }
+
             if (linkedIssues.length === 0) {
               const { data: pr } = await github.rest.pulls.get({
                 owner: context.repo.owner,
