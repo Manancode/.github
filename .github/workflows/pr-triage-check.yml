@@ -44,19 +44,20 @@ jobs:
             }
 
             const prNumber = context.payload.pull_request.number;
-            const prBody = context.payload.pull_request.body || '';
-            
+            const { data: prData } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber
+            });
+            const prBody = prData.body || '';
             const issuePattern = /(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s*#(\d+)/gi;
             const matches = [...prBody.matchAll(issuePattern)];
             const linkedIssues = matches.map(m => parseInt(m[1]));
 
+            console.log(`PR #${prNumber} body length: ${prBody.length}, linked issues: [${linkedIssues.join(', ')}]`);
+
             if (linkedIssues.length > 0) {
-              const { data: prWithLabels } = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber
-              });
-              if (prWithLabels.labels.some(l => l.name === 'no-linked-issue')) {
+              if (prData.labels.some(l => l.name === 'no-linked-issue')) {
                 await github.rest.issues.removeLabel({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -68,13 +69,7 @@ jobs:
             }
 
             if (linkedIssues.length === 0) {
-              const { data: pr } = await github.rest.pulls.get({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: prNumber
-              });
-
-              const prLabels = pr.labels.map(l => l.name);
+              const prLabels = prData.labels.map(l => l.name);
 
               if (!prLabels.includes('no-linked-issue')) {
                 await github.rest.issues.addLabels({
