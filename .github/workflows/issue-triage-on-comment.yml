@@ -7,7 +7,7 @@ on:
 jobs:
   auto-triage:
     if: >
-      startsWith(github.repository, 'asyncapi/') &&
+      (startsWith(github.repository, 'asyncapi/') || github.repository == 'Manancode/.github') &&
       !github.event.issue.pull_request &&
       github.event.issue.state == 'open'
     runs-on: ubuntu-latest
