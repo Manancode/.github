@@ -139,7 +139,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: prNumber,
-                  body: `Thanks for the PR! 🎉\n\nIt looks like this PR isn't linked to an approved issue. Please link the issue in the PR description (or create an issue first, get maintainer approval, then link it here).\n\nWe'll wait for you to link it. If it's still not linked after a few weeks, maintainers may close it.\n\nThank you! ❤️`
+                  body: `Thanks for the PR! 🎉\n\nIt looks like this PR isn't linked to an approved issue. Please link the issue in the PR description (or create an issue first, get maintainer approval, then link it here).\n\nThank you! ❤️`
                 });
 
                 console.log(`PR #${prNumber} has no linked issue - added comment and label`);
@@ -185,7 +185,7 @@ jobs:
                     owner: context.repo.owner,
                     repo: context.repo.repo,
                     issue_number: prNumber,
-                    body: `Thanks for the PR! 🎉\n\nThis PR is linked to issue #${issueNumber} that hasn't been approved/triaged by maintainers yet.\n\nPlease pause work and wait for maintainer approval on the issue first.\n\nIf it stays open, it may be marked for closure after a grace period.\n\nThank you for your understanding! ❤️`
+                    body: `Thanks for the PR! 🎉\n\nThis PR is linked to issue #${issueNumber} that hasn't been approved/triaged by maintainers yet.\n\nPlease pause work and wait for maintainer approval on the issue first.\n\nThank you for your understanding! ❤️`
                   });
 
                   console.log(`PR #${prNumber} links to untriaged issue #${issueNumber} - added comment`);
