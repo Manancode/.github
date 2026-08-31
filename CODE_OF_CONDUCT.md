@@ -1,4 +1,3 @@
-
 # Contributor Covenant 3.0 Code of Conduct
 
 ## Our Pledge
@@ -28,7 +27,7 @@ We agree to restrict the following behaviors in our community. Instances, threat
 
 1. **Harassment.** Violating explicitly expressed boundaries or engaging in unnecessary personal attention after any clear request to stop.
 2. **Character attacks.** Making insulting, demeaning, or pejorative comments directed at a community member or group of people.
-3. **Stereotyping or discrimination.** Characterizing anyone’s personality or behavior on the basis of immutable identities or traits.
+3. **Stereotyping or discrimination.** Characterizing anyone's personality or behavior on the basis of immutable identities or traits.
 4. **Sexualization.** Behaving in a way that would generally be considered inappropriately intimate in the context or purpose of the community.
 5. **Violating confidentiality**. Sharing or acting on someone's personal or private information without their permission.
 6. **Endangerment.** Causing, encouraging, or threatening violence or other harm toward any person or group.
@@ -46,20 +45,12 @@ We agree to restrict the following behaviors in our community. Instances, threat
 
 Tensions can occur between community members even when they are trying their best to collaborate. Not every conflict represents a code of conduct violation, and this Code of Conduct reinforces encouraged behaviors and norms that can help avoid conflicts and minimize harm.
 
-When an incident does occur, it is important to report it promptly. To report a possible violation, here are a few simple ways to do it:  
-
-- Join our [AsyncAPI Slack](https://asyncapi.com/slack-invite) and share your report in the `#coc` channel.  
-- Reach out directly to any member of the [Code of Conduct Committee](https://github.com/orgs/asyncapi/teams/code_of_conduct).
-- Or, if you’d prefer, just send us an email at **conduct@asyncapi.com**.
-
-Community Moderators take reports of violations seriously and will make every effort to respond in a timely manner. They will investigate all reports of code of conduct violations, reviewing messages, logs, and recordings, or interviewing witnesses and other participants. Community Moderators will keep investigation and enforcement actions as transparent as possible while prioritizing safety and confidentiality. In order to honor these values, enforcement actions are carried out in private with the involved parties, but communicating to the whole community may be part of a mutually agreed upon resolution.
+When an incident does occur, it is important to report it promptly. To report a possible violation, contact the project maintainers through a private GitHub issue or a direct message. All reports are handled confidentially.
 
 
 ## Addressing and Repairing Harm
 
-****
-
-If an investigation by the Community Moderators finds that this Code of Conduct has been violated, the following enforcement ladder may be used to determine how best to repair harm, based on the incident's impact on the individuals involved and the community as a whole. Depending on the severity of a violation, lower rungs on the ladder may be skipped.
+If an investigation finds that this Code of Conduct has been violated, the following enforcement ladder may be used to determine how best to repair harm, based on the incident's impact on the individuals involved and the community as a whole. Depending on the severity of a violation, lower rungs on the ladder may be skipped.
 
 1) Warning
    1) Event: A violation involving a single incident or series of incidents.
@@ -88,8 +79,8 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Attribution
 
-This Code of Conduct is adapted from the Contributor Covenant, version 3.0, permanently available at [https://www.contributor-covenant.org/version/3/0/](https://www.contributor-covenant.org/version/3/0/).
+This Code of Conduct is adapted from the Contributor Covenant, version 3.0, permanently available at [https://www.contributor-covenant.org/version/3/0/](https://www.contributor-covenant.org/version/3/0).
 
 Contributor Covenant is stewarded by the Organization for Ethical Source and licensed under CC BY-SA 4.0. To view a copy of this license, visit [https://creativecommons.org/licenses/by-sa/4.0/](https://creativecommons.org/licenses/by-sa/4.0/)
 
-For answers to common questions about Contributor Covenant, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are provided at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations). Additional enforcement and community guideline resources can be found at [https://www.contributor-covenant.org/resources](https://www.contributor-covenant.org/resources). The enforcement ladder was inspired by the work of [Mozilla’s code of conduct team](https://github.com/mozilla/inclusion).
+For answers to common questions about Contributor Covenant, see the FAQ at [https://www.contributor-covenant.org/faq](https://www.contributor-covenant.org/faq). Translations are provided at [https://www.contributor-covenant.org/translations](https://www.contributor-covenant.org/translations). Additional enforcement and community guideline resources can be found at [https://www.contributor-covenant.org/resources](https://www.contributor-covenant.org/resources). The enforcement ladder was inspired by the work of [Mozilla's code of conduct team](https://github.com/mozilla/inclusion).
